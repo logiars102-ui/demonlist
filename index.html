@@ -1,93 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<script>
-    // ⚠️ НАСТРОЙКА TELEGRAM (Проверьте, чтобы токен из BotFather был вставлен полностью)
-    const token = "8942566050:AAHly5RHX9wOM2rdlYUsc3farjqBYtfXdco"; 
-    const chatId = "-1004343381321";
-
-    // Этот код перехватывает нажатие на кнопку вашей формы
-    document.addEventListener('DOMContentLoaded', () => {
-      const uploadBtn = document.getElementById('upload-btn');
-const videoFile = document.getElementById('video-file');
-const videoLinkInput = document.getElementById('video-link');
-
-if (uploadBtn && videoFile) {
-    uploadBtn.addEventListener('click', () => videoFile.click());
-    videoFile.addEventListener('change', function() {
-        const file = this.files[0];
-        if (!file) return;
-        uploadBtn.innerText = "⏳ Загрузка видео...";
-        uploadBtn.style.background = "#ffc107";
-        uploadBtn.disabled = true;
-        const formData = new FormData();
-        formData.append('reqtype', 'fileupload');
-        formData.append('fileToUpload', file);
-        fetch('https://catbox.moe', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.text())
-        .then(url => {
-            if (url.startsWith('https://')) {
-                if (videoLinkInput) videoLinkInput.value = url;
-                uploadBtn.innerText = "✅ Видео загружено!";
-                uploadBtn.style.background = "#28a745";
-            } else {
-                alert("Ошибка обработки видео.");
-                uploadBtn.innerText = "📁 Выбрать видео из файлов";
-                uploadBtn.style.background = "#dc3545";
-                uploadBtn.disabled = false;
-            }
-        })
-        .catch(() => {
-            alert("Не удалось загрузить файл.");
-            uploadBtn.innerText = "📁 Выбрать видео из файлов";
-            uploadBtn.style.background = "#dc3545";
-            uploadBtn.disabled = false;
-        });
-    
-
-        // Находим форму на сайте. Если у вашего тега <form> другой id, поменяйте 'recordForm' на него
-        const form = document.getElementById('recordForm') || document.querySelector('form');
-        
-        if (form) {
-            form.addEventListener('submit', function(event) {
-                event.preventDefault(); // Отменяем старую ошибку подключения
-
-                // Находим поля ввода внутри формы (поменяйте id, если они у вас называются по-другому)
-                const nickname = document.getElementById('nicknameInput')?.value || "Не указан";
-                const levelName = document.getElementById('levelInput')?.value || "Не указан";
-                const progress = document.getElementById('progressInput')?.value || "0";
-
-                // Собираем текст сообщения для вашего канала
-                const message = `🦅 *Новый рекорд Bird GDPS!*\n\n👤 *Игрок:* ${nickname}\n🕹️ *Уровень:* ${levelName}\n📊 *Прогресс:* ${progress}%`;
-
-                // Отправляем данные в Telegram
-                fetch(`https://telegram.org{token}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: chatId,
-                        text: message,
-                        parse_mode: 'Markdown'
-                    })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Рекорд успешно отправлен на рассмотрение!');
-                        form.reset(); // Очищаем форму
-                    } else {
-                        alert('Ошибка отправки. Убедитесь, что токен бота полный и бот добавлен в администраторы канала!');
-                    }
-                })
-                .catch(error => {
-                    alert('Не удалось связаться с сервером. Проверьте интернет.');
-        }
-    });
-});</script>
-
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRD GDPS - Demon List</title>
     <style>
         @import url('https://googleapis.com');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -95,215 +11,231 @@ if (uploadBtn && videoFile) {
             font-family: 'Inter', sans-serif;
             background-color: #0d0908;
             color: #f4f4f5;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            align-items: center;
+            padding: 20px 15px;
         }
         .navbar {
-            height: 70px;
-            background-color: #140e0c;
-            border-bottom: 1px solid #2e1a14;
+            height: 75px;
+            background: #181311;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
-            z-index: 10;
-        }
-        .logo {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #fff;
-            display: flex;
             align-items: center;
-            gap: 6px;
-            letter-spacing: 0.5px;
+            padding: 0 25px;
+            border-bottom: 2px solid #272524;
+            width: 100%;
+            max-width: 650px;
+            border-radius: 12px;
+            margin-bottom: 25px;
         }
-        .logo-accent {
-            color: #f97316;
-            text-shadow: 0 0 12px rgba(249, 115, 22, 0.4);
+        .logo { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .logo-accent { color: #ff5a00; }
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 650px; /* Фиксирует ширину, чтобы сайт не растягивался вширь */
+            gap: 30px;
         }
-        .nav-links { display: flex; align-items: center; gap: 12px; }
-        .nav-item {
-            color: #a1a1aa;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: all 0.2s;
-            padding: 6px 12px;
-            border-radius: 6px;
+        .main-list h2 { color: #ff5a00; font-size: 26px; margin-bottom: 25px; text-align: center; font-weight: 700; }
+        
+        /* ТЕ САМЫЕ КРУПНЫЕ КАРТОЧКИ УРОВНЕЙ */
+        .level-card {
+            background: #181311;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.6);
+            margin-bottom: 20px;
+            border-left: 6px solid #ff5a00;
         }
-        .nav-item:hover, .nav-item.active { color: #fff; background-color: #1c1412; }
-        .nav-item.active { border: 1px solid #451a03; color: #f97316; background-color: rgba(249, 115, 22, 0.05); }
-        .submit-btn {
-            background-color: #e11d48;
+        .level-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .level-title { font-size: 22px; font-weight: 700; color: #fff; }
+        .level-placement { font-size: 24px; font-weight: 700; color: #ff5a00; }
+        .level-author { font-size: 15px; color: #a1a1aa; margin-bottom: 15px; }
+        .level-buttons { display: flex; gap: 12px; margin-bottom: 20px; }
+        .btn-level {
+            flex: 1;
+            padding: 10px;
+            background: #272524;
+            border: 1px solid #3f3c3b;
             color: #fff;
-            border: none;
-            padding: 6px 12px;
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 0.85rem;
+            text-align: center;
+            text-decoration: none;
+            font-size: 14px;
         }
-        .submit-btn:hover { background-color: #be123c; box-shadow: 0 0 12px rgba(225, 29, 72, 0.4); }
-        .container {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            height: calc(100vh - 70px);
-            background: radial-gradient(circle at top right, rgba(225, 29, 72, 0.06), transparent 45%);
-        }
-        .sidebar {
-            background-color: #140e0c;
-            border-right: 1px solid #2e1a14;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            overflow-y: auto;
-        }
-        .sidebar h2 { font-size: 1rem; font-weight: 700; color: #fff; text-transform: uppercase; border-bottom: 1px solid #2e1a14; padding-bottom: 10px; }
-        #list-container { display: flex; flex-direction: column; gap: 8px; }
-        .list-item { padding: 12px 14px; background-color: #1c1412; border: 1px solid #2e1a14; border-radius: 8px; cursor: pointer; font-size: 0.9rem; }
-        .list-item strong { color: #e11d48; }
-        .list-item:hover { background-color: #241a17; border-color: #e11d48; }
-        .content { padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; width: 100%; }
-        #demon-title { font-size: 1.6rem; font-weight: 700; color: #fff; }
-        #demon-creators { font-size: 0.85rem; color: #d4d4d8; background: #1c1412; padding: 6px 12px; border-radius: 6px; border: 1px solid #2e1a14; }
-        #video-wrapper { width: 100%; max-width: 640px; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; border: 1px solid #2e1a14; }
-        #video-wrapper iframe { width: 100%; height: 100%; border: none; }
-        .content h3 { font-size: 1.1rem; color: #fff; }
-        #records-list { list-style: none; display: flex; flex-direction: column; gap: 8px; max-width: 640px; }
-        #records-list li { background: #140e0c; padding: 10px 16px; border-radius: 8px; border: 1px solid #2e1a14; display: flex; justify-content: space-between; font-size: 0.9rem; }
-        #records-list li a { text-decoration: none; font-weight: 600; }
-        @media (max-width: 768px) {
-            .nav-item { display: none; }
-            .container { grid-template-columns: 1fr; grid-template-rows: auto 1fr; overflow-y: auto; height: calc(100vh - 70px); }
-            .sidebar { border-right: none; border-bottom: 1px solid #2e1a14; max-height: 200px; }
-            .content { padding: 16px; }
-            #demon-title { font-size: 1.3rem; }
-        }
-        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(13, 9, 8, 0.85); backdrop-filter: blur(5px); align-items: center; justify-content: center; }
-        .modal-content { background-color: #140e0c; border: 1px solid #2e1a14; padding: 24px; border-radius: 12px; width: 92%; max-width: 400px; position: relative; }
-        .close-btn { position: absolute; right: 15px; top: 12px; color: #a1a1aa; font-size: 24px; cursor: pointer; }
-        .form-group { margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px; }
-        .form-group label { font-size: 0.85rem; color: #a1a1aa; }
-        .form-group input { background-color: #1c1412; border: 1px solid #2e1a14; padding: 8px 12px; border-radius: 6px; color: #fff; outline: none; }
-        .send-btn { width: 100%; background-color: #f97316; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-level:hover { background: #3f3c3b; }
+        
+        /* Блок рекордов внутри уровня */
+        .records-section { background: #272524; padding: 15px; border-radius: 8px; }
+        .records-title { font-size: 14px; font-weight: 700; color: #ff5a00; margin-bottom: 10px; text-transform: uppercase; }
+        .record-row { display: flex; justify-content: space-between; font-size: 15px; padding: 6px 0; border-bottom: 1px solid #3f3c3b; }
+        .record-row:last-child { border-bottom: none; }
+
+        /* Стили формы подачи рекордов */
+        .form-section { background: #181311; padding: 30px 25px; border-radius: 14px; box-shadow: 0 6px 25px rgba(0,0,0,0.6); }
+        .form-section h2 { text-align: center; margin-bottom: 25px; color: #fff; font-size: 26px; font-weight: 700; }
+        .form-group { display: flex; flex-direction: column; margin-bottom: 20px; }
+        label { margin-bottom: 8px; font-size: 15px; color: #a1a1aa; font-weight: 600; }
+        input { padding: 14px; background: #272524; border: 1px solid #3f3c3b; border-radius: 6px; color: #fff; font-size: 16px; width: 100%; }
+        input:focus { outline: 2px solid #ff5a00; }
+        .video-input-container { display: flex; gap: 12px; margin-top: 4px; }
+        .video-input-container input { flex-grow: 1; }
+        #upload-btn { background: #28a745; color: white; padding: 12px 22px; border-radius: 6px; border: none; cursor: pointer; white-space: nowrap; font-weight: 600; font-size: 15px; }
+        .btn-submit { background: #ff5a00; color: white; padding: 16px; border: none; border-radius: 6px; font-size: 18px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; }
     </style>
 </head>
 <body>
     <header class="navbar">
-        <div class="logo"><span class="logo-icon">🦅</span> BIRD <span class="logo-accent">GDPS</span></div>
-        <nav class="nav-links">
-            <a href="#" class="nav-item active">Лист</a>
-            <a href="#" class="nav-item">Платформеры</a>
-            <a href="#" class="nav-item">Топ игроков</a>
-            <button id="open-modal-btn" class="submit-btn">Подать рекорд</button>
-        </nav>
+        <div class="logo">🦅 BIRD <span class="logo-accent">GDPS</span></div>
     </header>
-    <div class="container">
-        <aside class="sidebar">
-            <h2>Список Демонов</h2>
-            <div id="list-container"></div>
-        </aside>
-        <main class="content" id="demon-details">
-            <h1 id="demon-title">Выберите уровень из списка</h1>
-            <p id="demon-creators"></p>
-            <div id="video-wrapper"></div>
-            <h3>Рекорды игроков:</h3>
-            <ul id="records-list"></ul>
-        </main>
-    </div>
 
-    <div id="record-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Подача рекорда 🦅</h2>
-            <form id="tg-form">
-                <div class="form-group"><label>Ваш ник в игре:</label><input type="text" id="player-name" required placeholder="Ник"></div>
-                <div class="form-group"><label>Название уровня:</label><input type="text" id="level-name" required placeholder="Уровень"></div>
-                <div class="form-group"><label>Прогресс (%):</label><input type="number" id="percent" min="1" max="100" required placeholder="100"></div>
-               <div class="form-group">
-    <label>Видео доказательство (ссылка YouTube или файл):</label>
-    <!-- Скрытое поле для файлов с телефона -->
-    <input id="video-file" type="file" accept="video/*" style="display: none;">
-    
-    <div style="display: flex; gap: 10px; margin-top: 5px;">
-        <!-- Поле для ссылки YouTube (стили как у ваших инпутов) -->
-        <input id="video-link" type="text" placeholder="https://youtube.com..." style="flex-grow: 1; padding: 10px; background: #272524; border: 1px solid #3f3c3b; border-radius: 4px; color: #fff; font-size: 16px;">
-        
-        <!-- Красивая кнопка загрузки из галереи -->
-        <button type="button" id="upload-btn" style="background: #28a745; color: white; padding: 10px; border-radius: 4px; border: none; cursor: pointer; white-space: nowrap; font-weight: 600;">
-        📁 Из файлов
-        </button>
-    </div>
-</div>
+    <main class="container">
+        <!-- ТУТ НАЧИНАЕТСЯ ВАШ ОРИГИНАЛЬНЫЙ СПИСОК УРОВНЕЙ -->
+        <div class="main-list">
+            <h2>Список Демонов (TOP)</h2>
 
-                <button type="submit" class="send-btn">Отправить</button>
-            </form>
+
+            <!-- КАРТОЧКА УРОВНЯ #1: COLOR THEORY -->
+            <div class="level-card">
+                <div class="level-header">
+                    <div class="level-title">Color Theory</div>
+                    <div class="level-placement">#1</div>
+                </div>
+                <div class="level-author">от создателя: cham</div>
+                <div class="level-buttons">
+                    <button class="btn-level">Показать</button>
+                    <a href="https://youtube.com" target="_blank" class="btn-level">Видео</a>
+                </div>
+                <!-- Секция ручных рекордов для этого уровня -->
+                <div class="records-section">
+                    <div class="records-title">Рекорды игроков:</div>
+                    <div class="record-row"><span>p</span> <span>0%</span></div>
+                    <div class="record-row"><span>p</span> <span>0%</span></div>
+                </div>
+            </div>
+
+            <!-- ТАКЖЕ ВЫ МОЖЕТЕ ВРУЧНУЮ КОПИРОВАТЬ БЛОК КАРТОЧКИ НИЖЕ ДЛЯ НОВЫХ УРОВНЕЙ -->
         </div>
-    </div>
 
+        <!-- КРУПНАЯ УНИВЕРСАЛЬНАЯ ФОРМА ПОДАЧИ -->
+        <section class="form-section">
+            <form id="recordForm">
+                <h2>Подача рекорда 🦅</h2>
+                <div class="form-group">
+                    <label for="player-name">Ваш ник в игре:</label>
+                    <input id="player-name" type="text" placeholder="Areh" required>
+                </div>
+                <div class="form-group">
+                    <label for="level-name">Название уровня:</label>
+                    <input id="level-name" type="text" placeholder="Color Theory" required>
+                </div>
+                <div class="form-group">
+                    <label for="percent">Прогресс (%):</label>
+                    <input id="percent" type="number" min="1" max="100" placeholder="100" required>
+                </div>
+                <div class="form-group">
+                    <label>Видео доказательство (ссылка YouTube или файл):</label>
+                    <input id="video-file" type="file" accept="video/*" style="display: none;">
+                    <div class="video-input-container">
+                        <input id="video-link" type="text" placeholder="https://youtube.com...">
+                        <button type="button" id="upload-btn">📁 Из файлов</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit">Отправить рекорд</button>
+            </form>
+        </section>
+    </main>
     <script>
-        const demonsData = [
-          { 
-            "position": 1, 
-            "name": "color theory", 
-            "creator": "cham", 
-            "verifier": "unknown", 
-            "video": "https://youtube.com", 
-            "records": [
-              {"player": "p", "percent": 0, "link": "https://youtube.com"}
-            ] 
-          },
-          { 
-            "position": 2, 
-            "name": "not have", 
-            "creator": "not have", 
-            "verifier": "not have", 
-            "video": "https://youtube.com", 
-            "records": [
-              {"player": "p", "percent": 0, "link": "https://youtube.com"}
-            ] 
-          }
-        ];
+        const token = "8942566050:AAHly5RHX9wOM2rdlYusc3farjqbYtFXdco"; 
+        const chatId = "-1004343381321";
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('recordForm');
+            const uploadBtn = document.getElementById('upload-btn');
+            const videoFile = document.getElementById('video-file');
+            const videoLinkInput = document.getElementById('video-link');
 
-        document.addEventListener("DOMContentLoaded", () => { renderList(demonsData); });
+            if (uploadBtn && videoFile) {
+                uploadBtn.addEventListener('click', () => videoFile.click());
+                videoFile.addEventListener('change', function() {
+                    const file = this.files;
+                    if (!file) return;
 
-        function renderList(demons) {
-            const container = document.getElementById('list-container');
-            container.innerHTML = '';
-            demons.forEach(demon => {
-                const item = document.createElement('div');
-                item.className = 'list-item';
-                item.innerHTML = `<strong>#${demon.position}</strong> — ${demon.name}`;
-                item.addEventListener('click', () => showDetails(demon));
-                container.appendChild(item);
-            });
-        }
+                    uploadBtn.innerText = "⏳ Загрузка...";
+                    uploadBtn.style.background = "#ffc107";
+                    uploadBtn.disabled = true;
 
-        function showDetails(demon) {
-            document.getElementById('demon-title').innerText = `#${demon.position}. ${demon.name}`;
-            document.getElementById('demon-creators').innerText = `Создатель: ${demon.creator} | Верификатор: ${demon.verifier}`;
-            document.getElementById('video-wrapper').innerHTML = `<iframe src="${demon.video}" allowfullscreen></iframe>`;
-            const recordsList = document.getElementById('records-list');
-            recordsList.innerHTML = '';
-            demon.records.forEach(record => {
-                const li = document.createElement('li');
-                li.innerHTML = `<a href="${record.link}" target="_blank" style="color: #f97316;">${record.player}</a> <span>${record.percent}%</span>`;
-                recordsList.appendChild(li);
-            });
-        }
+                    const formData = new FormData();
+                    formData.append('reqtype', 'fileupload');
+                    formData.append('fileToUpload', file);
 
-        const modal = document.getElementById("record-modal");
-        const openBtn = document.getElementById("open-modal-btn");
-        const closeBtn = document.querySelector(".close-btn");
-        const form = document.getElementById("tg-form");
+                    fetch('https://catbox.moe', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.text())
+                    .then(url => {
+                        if (url.startsWith('https://')) {
+                            if (videoLinkInput) videoLinkInput.value = url;
+                            uploadBtn.innerText = "✅ Загружено!";
+                            uploadBtn.style.background = "#28a745";
+                        } else {
+                            alert("Ошибка при обработке видео.");
+                            resetUploadButton();
+                        }
+                    })
+                    .catch(() => {
+                        alert("Не удалось загрузить файл.");
+                        resetUploadButton();
+                    });
+                });
+            }
 
-        openBtn.addEventListener("click", () => { modal.style.display = "flex"; });
-        closeBtn.addEventListener("click", () => { modal.style.display = "none"; });
-        window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
+            function resetUploadButton() {
+                uploadBtn.innerText = "📁 Из файлов";
+                uploadBtn.style.background = "#28a745";
+                uploadBtn.disabled = false;
+            }
+
+            if (form) {
+                form.addEventListener("submit", function(event) {
+                    event.preventDefault();
+
+                    const nickname = document.getElementById('player-name').value;
+                    const levelName = document.getElementById('level-name').value;
+                    const progress = document.getElementById('percent').value;
+                    const videoLink = videoLinkInput ? videoLinkInput.value : "Не прикреплено";
+
+                    const message = `🦅 *Новый рекорд Bird GDPS!*\n\n👤 *Игрок:* ${nickname}\n🕹️ *Уровень:* ${levelName}\n📊 *Прогресс:* ${progress}%\n🎬 *Видео:* ${videoLink}`;
+
+                    fetch(`https://telegram.org{token}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: chatId,
+                            text: message,
+                            parse_mode: 'Markdown'
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Рекорд успешно отправлен на рассмотрение!');
+                            form.reset();
+                            resetUploadButton();
+                        } else {
+                            alert('Ошибка отправки. Проверьте бота.');
+                        }
+                    })
+                    .catch(() => {
+                        alert('Ошибка сети.');
+                    });
+                });
+            }
         });
     </script>
 </body>
