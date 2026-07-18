@@ -197,7 +197,8 @@
         </section>
     </main>
     <script>
-        const token = "8942566050:AAHly5RHX9wOM2rdlYusc3farjqbYtFXdco"; 
+      const token = `8942566050
+:AAHly5RHX9wOM2rdlYusc3farjqbYtFXdco`;
         const chatId = "-1004343381321";
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -216,17 +217,37 @@
                     uploadBtn.style.background = "#ffc107";
                     uploadBtn.disabled = true;
 
-                    const formData = new FormData();
-                    formData.append('reqtype', 'fileupload');
-                    formData.append('fileToUpload', file);
+const formData = new FormData();
+formData.append('chat_id', chatId);
+formData.append('video', file[0]); // Берем первый файл из списка
 
-                    fetch('https://catbox.moe', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.text())
-                    .then(url => {
-                        if (url.startsWith('https://')) {
+// Забираем ник из поля ввода (если оно есть)
+const nickInput = document.getElementById('nickname');
+const nickname = nickInput ? nickInput.value : "Не указан";
+formData.append('caption', `Новый рекорд!\nНик в игре: ${nickname}`);
+
+// Отправляем напрямую вашему боту
+fetch(`https://api.telegram.org/bot${token}/sendVideo`, {
+.then(response => {
+    if (response.ok) {
+        alert('Видео рекорда успешно загружено и отправлено!');
+        uploadBtn.innerText = '✅ Успешно';
+        uploadBtn.style.background = '#28a745'; // Зеленый цвет
+    } else {
+        alert('Ошибка Телеграма. Возможно, файл больше 50 МБ.');
+        resetUploadBtn();
+    }
+})
+.catch(() => {
+    alert('Ошибка сети при отправке файла.');
+    resetUploadBtn();
+});
+
+function resetUploadBtn() {
+    uploadBtn.innerText = 'Из файлов';
+    uploadBtn.style.background = '';
+    uploadBtn.disabled = false;
+}
                             if (videoLinkInput) videoLinkInput.value = url;
                             uploadBtn.innerText = "✅ Загружено!";
                             uploadBtn.style.background = "#28a745";
