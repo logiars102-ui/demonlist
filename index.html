@@ -8,6 +8,46 @@
 
     // Этот код перехватывает нажатие на кнопку вашей формы
     document.addEventListener('DOMContentLoaded', () => {
+      const uploadBtn = document.getElementById('upload-btn');
+const videoFile = document.getElementById('video-file');
+const videoLinkInput = document.getElementById('video-link');
+
+if (uploadBtn && videoFile) {
+    uploadBtn.addEventListener('click', () => videoFile.click());
+    videoFile.addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        uploadBtn.innerText = "⏳ Загрузка видео...";
+        uploadBtn.style.background = "#ffc107";
+        uploadBtn.disabled = true;
+        const formData = new FormData();
+        formData.append('reqtype', 'fileupload');
+        formData.append('fileToUpload', file);
+        fetch('https://catbox.moe', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(url => {
+            if (url.startsWith('https://')) {
+                if (videoLinkInput) videoLinkInput.value = url;
+                uploadBtn.innerText = "✅ Видео загружено!";
+                uploadBtn.style.background = "#28a745";
+            } else {
+                alert("Ошибка обработки видео.");
+                uploadBtn.innerText = "📁 Выбрать видео из файлов";
+                uploadBtn.style.background = "#dc3545";
+                uploadBtn.disabled = false;
+            }
+        })
+        .catch(() => {
+            alert("Не удалось загрузить файл.");
+            uploadBtn.innerText = "📁 Выбрать видео из файлов";
+            uploadBtn.style.background = "#dc3545";
+            uploadBtn.disabled = false;
+        });
+    
+
         // Находим форму на сайте. Если у вашего тега <form> другой id, поменяйте 'recordForm' на него
         const form = document.getElementById('recordForm') || document.querySelector('form');
         
@@ -43,11 +83,9 @@
                 })
                 .catch(error => {
                     alert('Не удалось связаться с сервером. Проверьте интернет.');
-                });
-            });
         }
     });
-</script>
+});</script>
 
 
     <style>
@@ -185,7 +223,22 @@
                 <div class="form-group"><label>Ваш ник в игре:</label><input type="text" id="player-name" required placeholder="Ник"></div>
                 <div class="form-group"><label>Название уровня:</label><input type="text" id="level-name" required placeholder="Уровень"></div>
                 <div class="form-group"><label>Прогресс (%):</label><input type="number" id="percent" min="1" max="100" required placeholder="100"></div>
-                <div class="form-group"><label>Ссылка на видео:</label><input type="url" id="video-link" required placeholder="https://..."></div>
+               <div class="form-group">
+    <label>Видео доказательство (ссылка YouTube или файл):</label>
+    <!-- Скрытое поле для файлов с телефона -->
+    <input id="video-file" type="file" accept="video/*" style="display: none;">
+    
+    <div style="display: flex; gap: 10px; margin-top: 5px;">
+        <!-- Поле для ссылки YouTube (стили как у ваших инпутов) -->
+        <input id="video-link" type="text" placeholder="https://youtube.com..." style="flex-grow: 1; padding: 10px; background: #272524; border: 1px solid #3f3c3b; border-radius: 4px; color: #fff; font-size: 16px;">
+        
+        <!-- Красивая кнопка загрузки из галереи -->
+        <button type="button" id="upload-btn" style="background: #28a745; color: white; padding: 10px; border-radius: 4px; border: none; cursor: pointer; white-space: nowrap; font-weight: 600;">
+        📁 Из файлов
+        </button>
+    </div>
+</div>
+
                 <button type="submit" class="send-btn">Отправить</button>
             </form>
         </div>
