@@ -154,9 +154,28 @@
 
     <script>
         const demonsData = [
-          { "position": 1, "name": "color theory", "creator": "cham", "verifier": "unknown", "video": "https://youtube.com", "records": [{"player": "p", "percent": , "link": "https://youtube.com"}] },
-          { "position": 2, "name": "not gave", "creator": "not have", "verifier": "not have", "video": "https://youtube.com", "records": [{"player": "p", "percent": , "link": "https://youtube.com"}] }
+          { 
+            "position": 1, 
+            "name": "color theory", 
+            "creator": "cham", 
+            "verifier": "unknown", 
+            "video": "https://youtube.com", 
+            "records": [
+              {"player": "p", "percent": 0, "link": "https://youtube.com"}
+            ] 
+          },
+          { 
+            "position": 2, 
+            "name": "not have", 
+            "creator": "not have", 
+            "verifier": "not have", 
+            "video": "https://youtube.com", 
+            "records": [
+              {"player": "p", "percent": 0, "link": "https://youtube.com"}
+            ] 
+          }
         ];
+
 
         document.addEventListener("DOMContentLoaded", () => { renderList(demonsData); });
 
