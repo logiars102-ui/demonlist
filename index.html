@@ -206,12 +206,6 @@
 const mainUploadBtn = document.getElementById('upload-btn');
 const hiddenVideoInput = document.getElementById('video-file');
 if (mainUploadBtn && hiddenVideoInput) {
-    mainUploadBtn.addEventListener('click', (e) => {
-        e.preventDefault(); // Защита от перезагрузки страницы
-        hiddenVideoInput.click(); // Принудительно открываем галерею
-    });
-}
-
             const form = document.getElementById('recordForm');
             const uploadBtn = document.getElementById('upload-btn');
             const videoFile = document.getElementById('video-file');
