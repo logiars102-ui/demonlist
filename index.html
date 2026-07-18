@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRD GDPS — Demon List</title>
+    
+    <script>
+        // ⚠️ НАСТРОЙКА TELEGRAM
+        const token = "8942566050"; 
+        const chatId = "-1004343381321";   
+    </script>
+
+    <style>
+        @import url('https://googleapis.com');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0908;
+            color: #f4f4f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .navbar {
+            height: 70px;
+            background-color: #140e0c;
+            border-bottom: 1px solid #2e1a14;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 10;
+        }
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.5px;
+        }
+        .logo-accent {
+            color: #f97316;
+            text-shadow: 0 0 12px rgba(249, 115, 22, 0.4);
+        }
+        .nav-links { display: flex; align-items: center; gap: 12px; }
+        .nav-item {
+            color: #a1a1aa;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+        .nav-item:hover, .nav-item.active { color: #fff; background-color: #1c1412; }
+        .nav-item.active { border: 1px solid #451a03; color: #f97316; background-color: rgba(249, 115, 22, 0.05); }
+        .submit-btn {
+            background-color: #e11d48;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .submit-btn:hover { background-color: #be123c; box-shadow: 0 0 12px rgba(225, 29, 72, 0.4); }
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            height: calc(100vh - 70px);
+            background: radial-gradient(circle at top right, rgba(225, 29, 72, 0.06), transparent 45%);
+        }
+        .sidebar {
+            background-color: #140e0c;
+            border-right: 1px solid #2e1a14;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+        .sidebar h2 { font-size: 1rem; font-weight: 700; color: #fff; text-transform: uppercase; border-bottom: 1px solid #2e1a14; padding-bottom: 10px; }
+        #list-container { display: flex; flex-direction: column; gap: 8px; }
+        .list-item { padding: 12px 14px; background-color: #1c1412; border: 1px solid #2e1a14; border-radius: 8px; cursor: pointer; font-size: 0.9rem; }
+        .list-item strong { color: #e11d48; }
+        .list-item:hover { background-color: #241a17; border-color: #e11d48; }
+        .content { padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; width: 100%; }
+        #demon-title { font-size: 1.6rem; font-weight: 700; color: #fff; }
+        #demon-creators { font-size: 0.85rem; color: #d4d4d8; background: #1c1412; padding: 6px 12px; border-radius: 6px; border: 1px solid #2e1a14; }
+        #video-wrapper { width: 100%; max-width: 640px; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; border: 1px solid #2e1a14; }
+        #video-wrapper iframe { width: 100%; height: 100%; border: none; }
+        .content h3 { font-size: 1.1rem; color: #fff; }
+        #records-list { list-style: none; display: flex; flex-direction: column; gap: 8px; max-width: 640px; }
+        #records-list li { background: #140e0c; padding: 10px 16px; border-radius: 8px; border: 1px solid #2e1a14; display: flex; justify-content: space-between; font-size: 0.9rem; }
+        #records-list li a { text-decoration: none; font-weight: 600; }
+        @media (max-width: 768px) {
+            .nav-item { display: none; }
+            .container { grid-template-columns: 1fr; grid-template-rows: auto 1fr; overflow-y: auto; height: calc(100vh - 70px); }
+            .sidebar { border-right: none; border-bottom: 1px solid #2e1a14; max-height: 200px; }
+            .content { padding: 16px; }
+            #demon-title { font-size: 1.3rem; }
+        }
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(13, 9, 8, 0.85); backdrop-filter: blur(5px); align-items: center; justify-content: center; }
+        .modal-content { background-color: #140e0c; border: 1px solid #2e1a14; padding: 24px; border-radius: 12px; width: 92%; max-width: 400px; position: relative; }
+        .close-btn { position: absolute; right: 15px; top: 12px; color: #a1a1aa; font-size: 24px; cursor: pointer; }
+        .form-group { margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px; }
+        .form-group label { font-size: 0.85rem; color: #a1a1aa; }
+        .form-group input { background-color: #1c1412; border: 1px solid #2e1a14; padding: 8px 12px; border-radius: 6px; color: #fff; outline: none; }
+        .send-btn { width: 100%; background-color: #f97316; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo"><span class="logo-icon">🦅</span> BIRD <span class="logo-accent">GDPS</span></div>
+        <nav class="nav-links">
+            <a href="#" class="nav-item active">Лист</a>
+            <a href="#" class="nav-item">Платформеры</a>
+            <a href="#" class="nav-item">Топ игроков</a>
+            <button id="open-modal-btn" class="submit-btn">Подать рекорд</button>
+        </nav>
+    </header>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Список Демонов</h2>
+            <div id="list-container"></div>
+        </aside>
+        <main class="content" id="demon-details">
+            <h1 id="demon-title">Выберите уровень из списка</h1>
+            <p id="demon-creators"></p>
+            <div id="video-wrapper"></div>
+            <h3>Рекорды игроков:</h3>
+            <ul id="records-list"></ul>
+        </main>
+    </div>
+
+    <div id="record-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Подача рекорда 🦅</h2>
+            <form id="tg-form">
+                <div class="form-group"><label>Ваш ник в игре:</label><input type="text" id="player-name" required placeholder="Ник"></div>
+                <div class="form-group"><label>Название уровня:</label><input type="text" id="level-name" required placeholder="Уровень"></div>
+                <div class="form-group"><label>Прогресс (%):</label><input type="number" id="percent" min="1" max="100" required placeholder="100"></div>
+                <div class="form-group"><label>Ссылка на видео:</label><input type="url" id="video-link" required placeholder="https://..."></div>
+                <button type="submit" class="send-btn">Отправить</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const demonsData = [
+          { "position": 1, "name": "color theory", "creator": "cham", "verifier": "unknown", "video": "https://youtube.com", "records": [{"player": "p", "percent": , "link": "https://youtube.com"}] },
+          { "position": 2, "name": "not gave", "creator": "not have", "verifier": "not have", "video": "https://youtube.com", "records": [{"player": "p", "percent": , "link": "https://youtube.com"}] }
+        ];
+
+        document.addEventListener("DOMContentLoaded", () => { renderList(demonsData); });
+
+        function renderList(demons) {
+            const container = document.getElementById('list-container');
+            container.innerHTML = '';
+            demons.forEach(demon => {
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.innerHTML = `<strong>#${demon.position}</strong> — ${demon.name}`;
+                item.addEventListener('click', () => showDetails(demon));
+                container.appendChild(item);
+            });
+        }
+
+        function showDetails(demon) {
+            document.getElementById('demon-title').innerText = `#${demon.position}. ${demon.name}`;
+            document.getElementById('demon-creators').innerText = `Создатель: ${demon.creator} | Верификатор: ${demon.verifier}`;
+            document.getElementById('video-wrapper').innerHTML = `<iframe src="${demon.video}" allowfullscreen></iframe>`;
+            const recordsList = document.getElementById('records-list');
+            recordsList.innerHTML = '';
+            demon.records.forEach(record => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="${record.link}" target="_blank" style="color: #f97316;">${record.player}</a> <span>${record.percent}%</span>`;
+                recordsList.appendChild(li);
+            });
+        }
+
+        const modal = document.getElementById("record-modal");
+        const openBtn = document.getElementById("open-modal-btn");
+        const closeBtn = document.querySelector(".close-btn");
+        const form = document.getElementById("tg-form");
+
+        openBtn.addEventListener("click", () => { modal.style.display = "flex"; });
+        closeBtn.addEventListener("click", () => { modal.style.display = "none"; });
+        window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const player = document.getElementById("player-name").value;
+            const level = document.getElementById("level-name").value;
+            const percent = document.getElementById("percent").value;
+            const video = document.getElementById("video-link").value;
+
+            const message = `🦅 *Новый рекорд на BIRD GDPS!*\n\n👤 *Игрок:* ${player}\n🎬 *Уровень:* ${level}\n📊 *Прогресс:* ${percent}%\n🔗 *Видео:* ${video}`;
+            const url = `https://telegram.org{token}/sendMessage`;
+
+            try {
+                const response = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: "Markdown" }) });
+                if (response.ok) { alert("Рекорд отправлен!"); form.reset(); modal.style.display = "none"; }
+                else { alert("Ошибка. Проверьте токены в начале файла."); }
+            } catch (error) { alert("Ошибка подключения."); }
+        });
+    </script>
+</body>
+</html>
