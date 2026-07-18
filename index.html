@@ -1,15 +1,54 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIRD GDPS — Demon List</title>
-    
-    <script>
-        // ⚠️ НАСТРОЙКА TELEGRAM
-        const token = "8942566050"; 
-        const chatId = "-1004343381321";   
-    </script>
+<script>
+    // ⚠️ НАСТРОЙКА TELEGRAM (Проверьте, чтобы токен из BotFather был вставлен полностью)
+    const token = "8942566050:AAHly5RHX9wOM2rdlYUsc3farjqBYtfXdco"; 
+    const chatId = "-1004343381321";
+
+    // Этот код перехватывает нажатие на кнопку вашей формы
+    document.addEventListener('DOMContentLoaded', () => {
+        // Находим форму на сайте. Если у вашего тега <form> другой id, поменяйте 'recordForm' на него
+        const form = document.getElementById('recordForm') || document.querySelector('form');
+        
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Отменяем старую ошибку подключения
+
+                // Находим поля ввода внутри формы (поменяйте id, если они у вас называются по-другому)
+                const nickname = document.getElementById('nicknameInput')?.value || "Не указан";
+                const levelName = document.getElementById('levelInput')?.value || "Не указан";
+                const progress = document.getElementById('progressInput')?.value || "0";
+
+                // Собираем текст сообщения для вашего канала
+                const message = `🦅 *Новый рекорд Bird GDPS!*\n\n👤 *Игрок:* ${nickname}\n🕹️ *Уровень:* ${levelName}\n📊 *Прогресс:* ${progress}%`;
+
+                // Отправляем данные в Telegram
+                fetch(`https://telegram.org{token}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Рекорд успешно отправлен на рассмотрение!');
+                        form.reset(); // Очищаем форму
+                    } else {
+                        alert('Ошибка отправки. Убедитесь, что токен бота полный и бот добавлен в администраторы канала!');
+                    }
+                })
+                .catch(error => {
+                    alert('Не удалось связаться с сервером. Проверьте интернет.');
+                });
+            });
+        }
+    });
+</script>
+
 
     <style>
         @import url('https://googleapis.com');
@@ -213,16 +252,7 @@
         closeBtn.addEventListener("click", () => { modal.style.display = "none"; });
         window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
 
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const player = document.getElementById("player-name").value;
-            const level = document.getElementById("level-name").value;
-            const percent = document.getElementById("percent").value;
-            const video = document.getElementById("video-link").value;
-
-            const message = `🦅 *Новый рекорд на BIRD GDPS!*\n\n👤 *Игрок:* ${player}\n🎬 *Уровень:* ${level}\n📊 *Прогресс:* ${percent}%\n🔗 *Видео:* ${video}`;
-            const url = `https://telegram.org{token}/sendMessage`;
-
+        
             try {
                 const response = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: "Markdown" }) });
                 if (response.ok) { alert("Рекорд отправлен!"); form.reset(); modal.style.display = "none"; }
