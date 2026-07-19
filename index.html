@@ -188,7 +188,7 @@
    </div>
         <!-- КРУПНАЯ УНИВЕРСАЛЬНАЯ ФОРМА ПОДАЧИ -->
         <section class="form-section"
-            <form id="recordForm"onsubmit="sendDemonRecord(event, this)">
+            <form id="recordForm">
                 <h2>Подача рекорда 🦅</h2>
                 <div class="form-group">
                     <label for="player-name">Ваш ник в игре:</label>
@@ -228,6 +228,13 @@ if (myButton && myFile) {
         myFile.click(); // Принудительно открываем галерею/проводник
     });
 }
+const myForm = document.querySelector('form');
+if (myForm) {
+    myForm.addEventListener('submit', function(e) {
+        sendDemonRecord(e, myForm);
+    });
+}
+
 function sendDemonRecord(e, formElement) {
     e.preventDefault();
     
