@@ -243,11 +243,10 @@ function sendDemonRecord(e, formElement) {
     const nickInput = document.getElementById('player-name');
     const playername = nickInput ? nickInput.value : "Не указан";
 
-    if (myFile && myFile.files.length > 0) {
+    if (myFile && myFile.files && myFile.files.length > 0) {
         // Передаем строго ПЕРВЫЙ файл из списка
         formData.append('video', myFile.files[0]);
         formData.append('caption', `Новый рекорд!\nНик в игре: ${playername}`);
-
         // 1. Отправляем видео в Телеграм
         fetch(`https://api.telegram.org/bot${token}/sendVideo`, {
             method: 'POST',
@@ -255,16 +254,25 @@ function sendDemonRecord(e, formElement) {
         })
         .then(response => {
             if (response.ok) {
-                // Если видео ушло, сразу отправляем текстовые данные
                 sendTextReport(playername);
+                if (myButton) {
+                    myButton.disabled = false;
+                    myButton.innerText = 'Из файлов';
+                }
             } else {
                 alert('Ошибка Телеграма при отправке видео. Возможно, файл больше 50 МБ.');
-                if (myButton) myButton.innerText = '📁 Из файлов';
+                if (myButton) {
+                    myButton.disabled = false;
+                    myButton.innerText = 'Повторить попытку';
+                }
             }
-        )
-        .catch(() => {
-            alert('Ошибка сети при отправке файла.');
-            if (myButton) myButton.innerText = '📁 Из файлов';
+        })
+        .catch(error => {
+            alert('Ошибка сети или запроса: ' + error.message);
+            if (myButton) {
+                myButton.disabled = false;
+                myButton.innerText = 'Повторить попытку';
+            }
         });
     } else {
         // Если видеофайла нет, отправляем только текст
@@ -386,7 +394,14 @@ function sendTextReport(playername) {
         resetUploadBtn();
     });
 }
-
+function resetUploadBtn() {
+    const btn = document.getElementById('upload-btn');
+    if (btn) {
+        btn.disabled = false;
+        btn.innerText = '📂 Из файлов';
+        btn.style.background = '';
+    }
+}
     </script>
 </body>
 </html>
