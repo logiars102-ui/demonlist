@@ -87,6 +87,21 @@
         .video-input-container input { flex-grow: 1; }
         #upload-btn { background: #28a745; color: white; padding: 12px 22px; border-radius: 6px; border: none; cursor: pointer; white-space: nowrap; font-weight: 600; font-size: 15px; }
         .btn-submit { background: #ff5a00; color: white; padding: 16px; border: none; border-radius: 6px; font-size: 18px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; }
+  .bot-notice-text {
+    color: #ffffff !important;   /* Белый цвет текста */
+    text-align: center;          /* Выравнивание по центру */
+    margin-top: 15px;            /* Аккуратный отступ вниз от кнопки */
+    font-size: 14px;             /* Оптимальный размер шрифта */
+    font-family: sans-serif;     /* Стандартный читаемый шрифт */
+    width: 100%;                 /* Растягиваем блок по ширине формы */
+}
+
+/* Стиль для ссылки, чтобы она тоже была красивой и белой */
+.bot-notice-text a {
+    color: #ffffff !important;
+    text-decoration: underline;  /* Подчеркивание, чтобы было понятно, что это ссылка */
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -211,6 +226,9 @@
                     </div>
                 </div>
                 <button type="submit" class="btn-submit">Отправить рекорд</button>
+    <div class="bot-notice-text">
+        Кнопка пока не работает, пишите в бота <a href="https://t.me" target="_blank">@hotjumpbot</a>
+    </div>
             </form>
         </section>
     </main>
